@@ -1,0 +1,41 @@
+schema: spec-driven
+created: 2026-06-29
+updated: 2026-06-29
+documents:
+  - PROPOSAL.md
+  - SPEC.md
+  - TASKS.md
+  - DESIGN.md
+  - IMPLEMENTATION_PLAN.md
+artifacts:
+  - optimize_stitching/__init__.py
+  - optimize_stitching/main.py
+  - optimize_stitching/config.py
+  - optimize_stitching/exceptions.py
+  - optimize_stitching/logger.py
+  - optimize_stitching/content_detector.py
+  - optimize_stitching/adaptive_sampler.py
+  - optimize_stitching/seam_detector.py
+  - optimize_stitching/seam_blender.py
+  - optimize_stitching/image_enhancer.py
+  - optimize_stitching/video_reader.py
+  - optimize_stitching/output_writer.py
+  - optimize_stitching/stitcher.py
+tests:
+  - tests/test_content_detector.py
+  - tests/test_adaptive_sampler.py
+  - tests/test_seam_detector.py
+  - tests/test_seam_blender.py
+  - tests/test_image_enhancer.py
+  - tests/test_integration.py
+verification:
+  - unit_tests: 20+
+  - edge_cases: 20
+  - performance_benchmark: true
+  - quality_assessment: manual
+implementation_order:
+  - Batch 1: config.py, exceptions.py, logger.py
+  - Batch 2: content_detector.py, adaptive_sampler.py, seam_detector.py, seam_blender.py
+  - Batch 3: image_enhancer.py, video_reader.py, output_writer.py
+  - Batch 4: stitcher.py, main.py
+  - Batch 5: tests/
