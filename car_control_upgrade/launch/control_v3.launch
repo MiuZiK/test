@@ -1,0 +1,36 @@
+<launch>
+  <!-- Car Control Upgrade V3 - Launch File -->
+  
+  <!-- Parameters -->
+  <arg name="serial_port" default="/dev/ttyUSB0" />
+  <arg name="baud_rate" default="115200" />
+  <arg name="linear_speed" default="0.33" />
+  <arg name="target_distance" default="16.0" />
+  <arg name="kp" default="1.5" />
+  <arg name="ki" default="0.08" />
+  <arg name="kd" default="0.3" />
+
+  <!-- Serial Bridge V2 (ROS-STM32 communication) -->
+  <node pkg="car_control_upgrade" type="serial_bridge_v2.py" 
+        name="serial_bridge_v2" output="screen">
+    <param name="port" value="$(arg serial_port)" />
+    <param name="baud" value="$(arg baud_rate)" />
+    <param name="publish_rate" value="50" />
+    <param name="heartbeat_interval" value="0.1" />
+    <param name="timeout" value="0.5" />
+    <param name="wheel_base" value="0.315" />
+    <param name="wheel_perimeter" value="0.32" />
+  </node>
+
+  <!-- Controller V3 (Navigation + Safety) -->
+  <node pkg="car_control_upgrade" type="straight_controller_v3_node"
+        name="undercarriage_inspector_v3" output="screen">
+    <param name="linear_x" value="$(arg linear_speed)" />
+    <param name="target_distance" value="$(arg target_distance)" />
+    <param name="kp" value="$(arg kp)" />
+    <param name="ki" value="$(arg ki)" />
+    <param name="kd" value="$(arg kd)" />
+    <remap from="/Odometry" to="/odom" />
+  </node>
+
+</launch>

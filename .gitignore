@@ -21,6 +21,7 @@ wheels/
 
 .pytest_cache/
 .coverage
+.coverage.*
 htmlcov/
 
 .DS_Store
@@ -37,6 +38,8 @@ Thumbs.db
 *.png
 *.gif
 *.bmp
+*.npz
+*.yml
 
 .idea/
 .vscode/
@@ -46,11 +49,21 @@ Thumbs.db
 frames/
 frames_fusion/
 output/
+output_*/
+comparison_output/
 enhanced_videos/
 continuous_strips_v*/
 calib_images/
+calib_images_target/
 calib_90degree/
+undistort_explore/
+video/
 
-.coverage
-.coverage.*
-htmlcov/
+*.docx
+*.doc
+
+.trae/
+superpowers-trae/
+
+catkin_ws/devel/
+catkin_ws/build/

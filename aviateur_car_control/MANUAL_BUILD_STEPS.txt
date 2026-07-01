@@ -1,0 +1,141 @@
+================================================================================
+  Aviateur + Car Control - Manual Build Commands
+  (Copy and paste each section into CMD or PowerShell)
+================================================================================
+
+PREREQUISITES:
+- Visual Studio 2022 (with C++ desktop development)
+- Git
+- CMake
+- All installed and in PATH
+
+================================================================================
+SECTION 1: Create Directories and Clone vcpkg
+--------------------------------------------------------------------------------
+
+Open CMD as Administrator and run:
+
+mkdir C:\dev 2>nul
+cd /d C:\dev
+
+git clone https://github.com/microsoft/vcpkg.git
+cd vcpkg
+bootstrap-vcpkg.bat
+
+================================================================================
+SECTION 2: Install Dependencies (10-20 minutes)
+--------------------------------------------------------------------------------
+
+vcpkg install libusb:x64-windows ffmpeg:x64-windows opencv4:x64-windows libsodium:x64-windows sdl2:x64-windows nlohmann-json:x64-windows
+
+================================================================================
+SECTION 3: Clone Aviateur Source Code
+--------------------------------------------------------------------------------
+
+cd /d C:\dev
+mkdir aviateur_build 2>nul
+cd aviateur_build
+
+git clone -b 0.1.2 --recursive https://github.com/OpenIPC/aviateur.git
+cd aviateur
+git submodule update --init --recursive
+
+================================================================================
+SECTION 4: Copy Car Control Module Files
+--------------------------------------------------------------------------------
+
+mkdir src\feature\car_control 2>nul
+
+REM === Replace the paths below with your actual path ===
+copy "c:\Users\admin\PycharmProjects\pythonProject\aviateur_car_control\car_control_module.h" src\feature\car_control\
+copy "c:\Users\admin\PycharmProjects\pythonProject\aviateur_car_control\car_control_module.cpp" src\feature\car_control\
+
+================================================================================
+SECTION 5: Create Module CMakeLists.txt
+--------------------------------------------------------------------------------
+
+Create file: src\feature\car_control\CMakeLists.txt
+(Paste this content)
+
+--------------------------------- COPY BELOW ---------------------------------
+add_library(car_control STATIC
+    car_control_module.cpp
+)
+
+target_include_directories(car_control PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../3rd/json/single_include/nlohmann
+)
+
+target_link_libraries(car_control PRIVATE
+    ws2_32
+)
+
+message(STATUS "Car Control Module: ENABLED")
+--------------------------------- COPY ABOVE ---------------------------------
+
+You can create it with:
+(
+echo add_library^(car_control STATIC
+echo     car_control_module.cpp
+echo ^)
+echo.
+echo target_include_directories^(car_control PUBLIC
+echo     ^${CMAKE_CURRENT_SOURCE_DIR}
+echo     ^${CMAKE_CURRENT_SOURCE_DIR}/../../3rd/json/single_include/nlohmann
+echo ^)
+echo.
+echo target_link_libraries^(car_control PRIVATE
+echo     ws2_32
+echo ^)
+echo.
+echo message^(STATUS "Car Control Module: ENABLED"^)
+) > src\feature\car_control\CMakeLists.txt
+
+================================================================================
+SECTION 6: Modify Main CMakeLists.txt
+--------------------------------------------------------------------------------
+
+Open CMakeLists.txt with Notepad, find the line:
+
+    target_link_libraries(aviateur PRIVATE ...
+
+And ADD these lines AFTER that block:
+
+--------------------------------- COPY BELOW ---------------------------------
+# Car Control Module
+option(ENABLE_CAR_CONTROL "Enable vehicle control" ON)
+if(ENABLE_CAR_CONTROL)
+    add_subdirectory(src/feature/car_control)
+    target_link_libraries(aviateur PRIVATE car_control)
+    if(WIN32)
+        target_link_libraries(car_control PRIVATE ws2_32)
+    endif()
+endif()
+--------------------------------- COPY ABOVE ---------------------------------
+
+Save the file.
+
+================================================================================
+SECTION 7: Build!
+--------------------------------------------------------------------------------
+
+mkdir build 2>nul
+cd build
+
+cmake .. -G "Visual Studio 17 2022" -A x64 -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake -DENABLE_CAR_CONTROL=ON
+
+cmake --build . --config Release --parallel
+
+================================================================================
+SECTION 8: Run It!
+--------------------------------------------------------------------------------
+
+The exe will be at:
+  C:\dev\aviateur_build\aviateur\build\bin\Release\aviateur.exe
+
+Double-click to run!
+
+================================================================================
+END OF BUILD GUIDE
+================================================================================

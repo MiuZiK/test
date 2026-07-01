@@ -1,0 +1,35 @@
+1.解压功能包，编译
+编译基础知识【资料包\2.ROS从底层源码到进阶应用系列教程\3.ROS应用视频教程\3.程序修改编译与SublimText简析】
+
+2.创建设备STM32运动底盘串口的规则
+打开文件所在路径：cd turn_on_wheeltec_robot\scripts
+执行创建规则的文件：sudo ./wheeltec_udev.sh
+拔插STM32运动底盘串口，使规则生效
+
+创建规则相关教程：【资料包\3.ROS开发手册\4.ROS开发教程.pdf】
+写的不是很详细，建议百度搜索：ubuntu 串口别名
+https://blog.csdn.net/yhxxhy978/article/details/98445784
+
+
+3.根据编译提示手动安装相关依赖包
+ROS相关依赖包：sudo apt-get install ros-melodic-xxx*
+系统相关依赖包：sudo apt-get install xxx*
+带msgs的都是ROS相关依赖，其它需要自行判断例如提示没有uuid_msgs，就运行：sudo apt-get install ros-melodic-uuid*
+提示缺少serialConfig，就安装sudo apt-get install ros-melodic-serial（其它ROS版本如果没有这个功能包，我们不负责）
+
+4.自行创建 ubuntu 环境编译/运行功能报错 
+首先自行安装 rosdep 后，在工作空间下运行以下命令安装绝大部分功能包依赖： rosdep install --from-paths src --ignore-src -r -y 
+编译提示缺的功能包可以通过命令安装：sudo apt-get install ros-melodic-功能包名称 
+部分功能适配观看教程【资料包/3.ROS 开发手册\相关功能安装教程】
+rosdep安装教程https://blog.csdn.net/weixin_44023934/article/details/121242176
+语音相关去看语音资料文件夹【资料包\11.声源定位与语音导航\2.ROS语音功能包\ROS语音使用教程v1.5.pdf】
+
+5.独立思考、善用搜索引擎建议
+我们的产品使用过程有问题可以提供支持，自己DIY不在服务范围内
+建议学习好基础再尝试DIY，linux基础、ROS编程基础，这些B站上都有很优秀的视频教程
+我们也提供了原创视频教程用于学习
+【资料包\2.ROS从底层源码到进阶应用系列教程\6.ROS相关的ubuntu基础教程】
+【资料包\2.ROS从底层源码到进阶应用系列教程\2.ROS基础干货视频教程】
+【资料包\2.ROS从底层源码到进阶应用系列教程\9.通过英文ROS wiki快速入门ROS教程】
+【资料包\2.ROS从底层源码到进阶应用系列教程\3.ROS应用视频教程】
+

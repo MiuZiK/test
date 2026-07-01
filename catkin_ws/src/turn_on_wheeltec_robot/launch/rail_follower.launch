@@ -1,0 +1,86 @@
+<launch>
+    <!--
+        轨道跟随控制器 launch 文件
+        
+        功能：基于激光雷达的实时轨道检测与跟踪控制
+        特点：
+          - 不依赖里程计绝对坐标，对初始姿态偏差免疫
+          - RANSAC直线拟合提取轨道特征
+          - PurePursuit + Stanley混合控制算法
+          - 实时可视化调试（RViz）
+        
+        使用方法：
+          roslaunch turn_on_wheeltec_robot rail_follower.launch
+        
+        参数说明（可通过命令行或配置文件修改）：
+          - angle_min/max: 激光扫描角度范围（度）
+          - range_min/max: 距离过滤范围（米）
+          - expected_rail_width: 预期轨距（米）
+          - linear_speed: 前进速度（m/s）
+          - target_distance: 目标行驶距离（米）
+    -->
+    
+    <arg name="controller" default="rail_follower_node" doc="Controller node name"/>
+    
+    <arg name="angle_min" default="-75.0"/>
+    <arg name="angle_max" default="75.0"/>
+    <arg name="range_min" default="0.3"/>
+    <arg name="range_max" default="5.0"/>
+    <arg name="lateral_min" default="0.3"/>
+    <arg name="lateral_max" default="2.5"/>
+    
+    <arg name="ransac_iterations" default="100"/>
+    <arg name="ransac_threshold" default="0.05"/>
+    <arg name="min_inlier_ratio" default="0.3"/>
+    <arg name="min_rail_points" default="20"/>
+    
+    <arg name="expected_rail_width" default="0.6"/>
+    <arg name="rail_width_tolerance" default="0.25"/>
+    <arg name="parallel_threshold" default="0.15"/>
+    
+    <arg name="linear_speed" default="0.33"/>
+    <arg name="lookahead_distance" default="1.5"/>
+    <arg name="stanley_k_e" default="0.5"/>
+    <arg name="stanley_k_h" default="1.0"/>
+    
+    <arg name="target_distance" default="16.0"/>
+    <arg name="target_tolerance" default="0.3"/>
+    <arg name="lost_timeout" default="1.0"/>
+    <arg name="required_detect_count" default="5"/>
+
+    <!-- 启动轨道跟随控制器节点 -->
+    <node name="$(arg controller)" pkg="turn_on_wheeltec_robot" type="$(arg controller)" output="screen">
+        <!-- 激光裁剪参数 -->
+        <param name="~angle_min" value="$(arg angle_min)"/>
+        <param name="~angle_max" value="$(arg angle_max)"/>
+        <param name="~range_min" value="$(arg range_min)"/>
+        <param name="~range_max" value="$(arg range_max)"/>
+        <param name="~lateral_min" value="$(arg lateral_min)"/>
+        <param name="~lateral_max" value="$(arg lateral_max)"/>
+        
+        <!-- RANSAC参数 -->
+        <param name="~ransac_iterations" value="$(arg ransac_iterations)"/>
+        <param name="~ransac_threshold" value="$(arg ransac_threshold)"/>
+        <param name="~min_inlier_ratio" value="$(arg min_inlier_ratio)"/>
+        <param name="~min_rail_points" value="$(arg min_rail_points)"/>
+        
+        <!-- 轨道几何约束 -->
+        <param name="~expected_rail_width" value="$(arg expected_rail_width)"/>
+        <param name="~rail_width_tolerance" value="$(arg rail_width_tolerance)"/>
+        <param name="~parallel_threshold" value="$(arg parallel_threshold)"/>
+        
+        <!-- 控制参数 -->
+        <param name="~linear_speed" value="$(arg linear_speed)"/>
+        <param name="~lookahead_distance" value="$(arg lookahead_distance)"/>
+        <param name="~stanley_k_e" value="$(arg stanley_k_e)"/>
+        <param name="~stanley_k_h" value="$(arg stanley_k_h)"/>
+        
+        <!-- 目标参数 -->
+        <param name="~target_distance" value="$(arg target_distance)"/>
+        <param name="~target_tolerance" value="$(arg target_tolerance)"/>
+        
+        <!-- 安全参数 -->
+        <param name="~lost_timeout" value="$(arg lost_timeout)"/>
+        <param name="~required_detect_count" value="$(arg required_detect_count)"/>
+    </node>
+</launch>
